@@ -5,7 +5,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="csrf-token" content="{{ csrf_token() }}">
 
-        <title>{{ config('app.name', 'Aquafin') }}</title>
+        <title>Aquafin - Materiaal Beheer</title>
 
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">
@@ -24,8 +24,24 @@
                 <p class="text-center text-gray-600 mt-2">Materiaal Beheer Systeem</p>
             </div>
 
+            <!-- Content -->
             <div class="w-full sm:max-w-md mt-6 px-6 py-4 bg-white shadow-md overflow-hidden sm:rounded-lg">
-                @yield('content')
+                {{ $slot }}
+            </div>
+
+            <!-- Test Credentials -->
+            <div class="mt-6 p-4 bg-white rounded-lg shadow-md max-w-md w-full">
+                <h3 class="font-medium text-gray-900 mb-2 text-center">Test Accounts:</h3>
+                <div class="text-sm text-gray-600 space-y-1">
+                    <div class="flex justify-between">
+                        <span><strong>Admin:</strong></span> 
+                        <span>admin@aquafin.be / password</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span><strong>User:</strong></span> 
+                        <span>jan@aquafin.be / password</span>
+                    </div>
+                </div>
             </div>
         </div>
     </body>
