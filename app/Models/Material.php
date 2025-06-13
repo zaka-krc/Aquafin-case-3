@@ -6,11 +6,11 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Material extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory;
+    // VERWIJDERD: SoftDeletes
 
     protected $fillable = [
         'category_id',
@@ -30,15 +30,32 @@ class Material extends Model
         'minimum_stock' => 'integer'
     ];
 
-    // Een materiaal behoort tot een categorie
     public function category(): BelongsTo
     {
         return $this->belongsTo(Category::class);
     }
 
-    // Een materiaal kan in veel order items zitten
     public function orderItems(): HasMany
     {
         return $this->hasMany(OrderItem::class);
+    }
+
+    public function scopeAvailable($query)
+    {
+        return $query->where('is_available', true);
+    }
+
+    public function scopeSearch($query, $search)
+    {
+        return $query->where(function($q) use ($search) {
+            $q->where('name', 'like', "%{$search}%")
+              ->orWhere('description', 'like', "%{$search}%")
+              ->orWhere('article_number', 'like', "%{$search}%");
+        });
+    }
+
+    public function getFullNameAttribute(): string
+    {
+        return $this->name . ($this->description ? " - {$this->description}" : '');
     }
 }

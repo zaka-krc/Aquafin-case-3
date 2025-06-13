@@ -1,24 +1,31 @@
 <?php
 
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\MaterialController;
 use App\Http\Controllers\OrderController;
 use App\Http\Middleware\AdminMiddleware;
 use Illuminate\Support\Facades\Route;
 
-// Home redirect
+// Redirect home naar dashboard als ingelogd
 Route::get('/', function () {
     if (auth()->check()) {
-        return view('home');
+        return redirect()->route('dashboard');
     }
     return redirect()->route('login');
-})->name('home');
+});
 
 // User routes (authentication required)
 Route::middleware('auth')->group(function () {
     
+    // Dashboard
+    Route::get('/dashboard', function () {
+        return view('dashboard'); // Gebruik dashboard view
+    })->name('dashboard');
+    
     // Materials (User functionality)
     Route::get('/materials', [MaterialController::class, 'index'])->name('materials.index');
+    Route::get('/materials/{material}', [MaterialController::class, 'show'])->name('materials.show');
     Route::post('/materials/{material}/add-to-cart', [MaterialController::class, 'addToCart'])->name('materials.add-to-cart');
     
     // Cart
@@ -26,14 +33,24 @@ Route::middleware('auth')->group(function () {
     Route::delete('/cart/{material}', [MaterialController::class, 'removeFromCart'])->name('materials.remove-from-cart');
     
     // Orders
+    Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
     Route::get('/orders/create', [OrderController::class, 'create'])->name('orders.create');
     Route::post('/orders', [OrderController::class, 'store'])->name('orders.store');
     Route::get('/orders/{order}', [OrderController::class, 'show'])->name('orders.show');
+    
+    // Profile routes (from Breeze)
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
 // Admin routes (admin middleware required)
 Route::middleware(['auth', AdminMiddleware::class])->prefix('admin')->name('admin.')->group(function () {
+    
+    // Admin dashboard
     Route::get('/', [AdminController::class, 'dashboard'])->name('dashboard');
+    
+    // Material management
     Route::get('/materials', [AdminController::class, 'materials'])->name('materials');
     Route::get('/materials/create', [AdminController::class, 'createMaterial'])->name('materials.create');
     Route::post('/materials', [AdminController::class, 'storeMaterial'])->name('materials.store');
