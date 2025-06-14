@@ -206,6 +206,7 @@ class MaterialSeeder extends Seeder
                         'unit' => $item['unit'],
                         'is_available' => true,
                         'minimum_stock' => rand(5, 20), // Random minimum voorraad
+                        'current_stock' => rand(10, 100), // Random huidige voorraad
                         'price' => rand(5, 500) / 10, // Random prijs tussen 0.50 en 50.00
                     ]);
                 }

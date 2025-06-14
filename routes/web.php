@@ -57,6 +57,11 @@ Route::middleware(['auth', AdminMiddleware::class])->prefix('admin')->name('admi
     Route::get('/materials/{material}/edit', [AdminController::class, 'editMaterial'])->name('materials.edit');
     Route::patch('/materials/{material}', [AdminController::class, 'updateMaterial'])->name('materials.update');
     Route::delete('/materials/{material}', [AdminController::class, 'deleteMaterial'])->name('materials.delete');
+    
+    // Order management
+    Route::get('/orders', [AdminController::class, 'orders'])->name('orders');
+    Route::get('/orders/{order}', [AdminController::class, 'orderShow'])->name('orders.show');
+    Route::patch('/orders/{order}/status', [AdminController::class, 'updateOrderStatus'])->name('orders.update-status');
 });
 
 require __DIR__.'/auth.php';
