@@ -1,3 +1,206 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Aquafin Brand Colors - Override Tailwind defaults */
+@layer base {
+  :root {
+    /* Override Tailwind blue colors met Aquafin kleuren */
+    --color-blue-50: #E6F2FB;
+    --color-blue-100: #CCE5F7;
+    --color-blue-200: #99CBEF;
+    --color-blue-300: #66B1E7;
+    --color-blue-400: #3397DF;
+    --color-blue-500: #005CA9; /* Main Aquafin Blue */
+    --color-blue-600: #004A87;
+    --color-blue-700: #003A6F; /* Dark Aquafin Blue */
+    --color-blue-800: #002548;
+    --color-blue-900: #001224;
+    
+    /* Aquafin accent colors */
+    --aquafin-green: #7FB539;
+    --aquafin-orange: #FF6900;
+    --aquafin-light-blue: #0080C7;
+  }
+}
+
+/* Override standaard Tailwind componenten automatisch */
+@layer components {
+  /* Alle bg-blue-500 worden automatisch Aquafin blauw */
+  .bg-blue-500 {
+    background-color: #005CA9 !important;
+  }
+  
+  .bg-blue-600 {
+    background-color: #004A87 !important;
+  }
+  
+  .bg-blue-700 {
+    background-color: #003A6F !important;
+  }
+  
+  .text-blue-500 {
+    color: #005CA9 !important;
+  }
+  
+  .text-blue-600 {
+    color: #004A87 !important;
+  }
+  
+  .border-blue-500 {
+    border-color: #005CA9 !important;
+  }
+  
+  /* Ring/focus colors */
+  .ring-blue-500 {
+    --tw-ring-color: #005CA9 !important;
+  }
+  
+  .focus\:ring-blue-500:focus {
+    --tw-ring-color: #005CA9 !important;
+  }
+  
+  .focus\:border-blue-500:focus {
+    border-color: #005CA9 !important;
+  }
+  
+  /* Hover states */
+  .hover\:bg-blue-600:hover {
+    background-color: #004A87 !important;
+  }
+  
+  .hover\:bg-blue-700:hover {
+    background-color: #003A6F !important;
+  }
+  
+  .hover\:text-blue-600:hover {
+    color: #004A87 !important;
+  }
+  
+  .hover\:text-blue-700:hover {
+    color: #003A6F !important;
+  }
+  
+  /* Groene accenten voor success states */
+  .bg-green-500 {
+    background-color: #7FB539 !important;
+  }
+  
+  .bg-green-600 {
+    background-color: #6FA02F !important;
+  }
+  
+  .text-green-600 {
+    color: #7FB539 !important;
+  }
+  
+  /* Oranje voor warnings */
+  .bg-orange-500 {
+    background-color: #FF6900 !important;
+  }
+  
+  .text-orange-600 {
+    color: #FF6900 !important;
+  }
+  
+  /* Extra Aquafin styling */
+  .nav-aquafin {
+    background-color: #005CA9;
+    box-shadow: 0 2px 4px rgba(0,0,0,.1);
+  }
+  
+  /* Verbeter buttons */
+  button[type="submit"],
+  .btn,
+  a[class*="bg-blue"] {
+    font-weight: 500;
+    transition: all 0.2s ease;
+    box-shadow: 0 1px 3px rgba(0,0,0,.1);
+  }
+  
+  button[type="submit"]:hover,
+  .btn:hover,
+  a[class*="bg-blue"]:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 6px rgba(0,0,0,.1);
+  }
+  
+  /* Verbeter cards */
+  .shadow {
+    box-shadow: 0 1px 3px rgba(0,0,0,.12), 0 1px 2px rgba(0,0,0,.06);
+  }
+  
+  .shadow-lg {
+    box-shadow: 0 10px 15px -3px rgba(0,0,0,.1), 0 4px 6px -2px rgba(0,0,0,.05);
+  }
+  
+  /* Betere form inputs */
+  input[type="text"],
+  input[type="email"],
+  input[type="password"],
+  input[type="number"],
+  input[type="date"],
+  textarea,
+  select {
+    border-color: #d1d5db;
+    transition: all 0.2s ease;
+  }
+  
+  input[type="text"]:focus,
+  input[type="email"]:focus,
+  input[type="password"]:focus,
+  input[type="number"]:focus,
+  input[type="date"]:focus,
+  textarea:focus,
+  select:focus {
+    border-color: #005CA9;
+    box-shadow: 0 0 0 3px rgba(0, 92, 169, 0.1);
+  }
+  
+  /* Aquafin table styling */
+  table thead {
+    background-color: #f3f4f6;
+    border-bottom: 2px solid #005CA9;
+  }
+  
+  /* Better badges */
+  span[class*="bg-yellow"] {
+    background-color: #fbbf24;
+    color: #78350f;
+  }
+  
+  span[class*="bg-red"] {
+    background-color: #ef4444;
+    color: white;
+  }
+}
+
+/* Algemene verbeteringen */
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  color: #1f2937;
+}
+
+/* Betere link styling */
+a {
+  transition: color 0.2s ease;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* Loading state */
+.loading {
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+/* Print styles */
+@media print {
+  nav,
+  button,
+  .no-print {
+    display: none !important;
+  }
+}

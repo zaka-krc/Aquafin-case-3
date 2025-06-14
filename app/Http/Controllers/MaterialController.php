@@ -11,23 +11,36 @@ class MaterialController extends Controller
     // Materialen overzicht voor users
     public function index(Request $request)
     {
-        $categories = Category::with('availableMaterials')->get();
-        $selectedCategory = $request->get('category');
+        $categories = Category::with('materials')->get();
         
-        $materials = Material::with('category')
-            ->where('is_available', true)
-            ->when($selectedCategory, function($query, $selectedCategory) {
-                return $query->where('category_id', $selectedCategory);
-            })
-            ->get();
+        $query = Material::with('category')->where('is_available', true);
+        
+        // Filter op categorie
+        if ($request->has('category') && $request->category != '') {
+            $query->where('category_id', $request->category);
+        }
+        
+        // Zoek functionaliteit
+        if ($request->has('search') && $request->search != '') {
+            $query->search($request->search);
+        }
+        
+        $materials = $query->get();
 
-        return view('materials.index', compact('categories', 'materials', 'selectedCategory'));
+        return view('materials.index', compact('categories', 'materials'));
     }
 
     // Materiaal details
     public function show(Material $material)
     {
-        return view('materials.show', compact('material'));
+        $material->load('category');
+        $relatedMaterials = Material::where('category_id', $material->category_id)
+            ->where('id', '!=', $material->id)
+            ->where('is_available', true)
+            ->take(4)
+            ->get();
+            
+        return view('materials.show', compact('material', 'relatedMaterials'));
     }
 
     // Voeg materiaal toe aan winkelwagen (session)

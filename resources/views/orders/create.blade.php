@@ -1,143 +1,129 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="max-w-7xl mx-auto px-4 py-8">
-    <div class="flex justify-between items-center mb-8">
-        <h1 class="text-2xl font-bold">Mijn Bestellingen</h1>
-        <a href="{{ route('materials.index') }}" 
-           class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">
-            Nieuwe Bestelling
-        </a>
-    </div>
+<div class="max-w-4xl mx-auto px-4 py-8">
+    <h1 class="text-2xl font-bold mb-8">Bestelling Afronden</h1>
 
-    @if($orders->isEmpty())
-        <div class="bg-white rounded-lg shadow p-8 text-center">
-            <div class="text-gray-500 mb-4">
-                <svg class="mx-auto h-12 w-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
-                </svg>
+    <form action="{{ route('orders.store') }}" method="POST">
+        @csrf
+        
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- Order Items -->
+            <div class="lg:col-span-2">
+                <div class="bg-white rounded-lg shadow p-6">
+                    <h2 class="text-lg font-medium mb-4">Bestelde Materialen</h2>
+                    
+                    <div class="space-y-4">
+                        @foreach($cart as $materialId => $item)
+                            <div class="flex items-center border-b pb-4">
+                                <div class="flex-1">
+                                    <h3 class="font-medium">{{ $item['name'] }}</h3>
+                                    <p class="text-sm text-gray-600">{{ $item['category'] }}</p>
+                                </div>
+                                <div class="text-right">
+                                    <p class="font-medium">{{ $item['quantity'] }} {{ $item['unit'] }}</p>
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+                    
+                    <div class="mt-6 pt-4 border-t">
+                        <div class="flex justify-between">
+                            <span class="font-medium">Totaal aantal items:</span>
+                            <span class="font-bold">{{ count($cart) }}</span>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <p class="text-gray-600 mb-4">Je hebt nog geen bestellingen geplaatst.</p>
-            <a href="{{ route('materials.index') }}" 
-               class="inline-block bg-blue-500 text-white px-6 py-2 rounded-md hover:bg-blue-600">
-                Bekijk Materialen
-            </a>
-        </div>
-    @else
-        <div class="bg-white rounded-lg shadow overflow-hidden">
-            <table class="min-w-full divide-y divide-gray-200">
-                <thead class="bg-gray-50">
-                    <tr>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            Bestelnummer
-                        </th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            Datum
-                        </th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            Leverdatum
-                        </th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            Items
-                        </th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            Status
-                        </th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            Acties
-                        </th>
-                    </tr>
-                </thead>
-                <tbody class="bg-white divide-y divide-gray-200">
-                    @foreach($orders as $order)
-                        <tr class="hover:bg-gray-50">
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="text-sm font-medium text-gray-900">
-                                    {{ $order->order_number }}
-                                </div>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="text-sm text-gray-900">
-                                    {{ $order->created_at->format('d/m/Y') }}
-                                </div>
-                                <div class="text-xs text-gray-500">
-                                    {{ $order->created_at->format('H:i') }}
-                                </div>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="text-sm text-gray-900">
-                                    {{ $order->requested_delivery_date->format('d/m/Y') }}
-                                </div>
-                                @if($order->delivery_location)
-                                    <div class="text-xs text-gray-500">
-                                        📍 {{ $order->delivery_location }}
-                                    </div>
-                                @endif
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="text-sm text-gray-900">
-                                    {{ $order->orderItems->count() }} items
-                                </div>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                @php
-                                    $statusColors = [
-                                        'pending' => 'bg-yellow-100 text-yellow-800',
-                                        'approved' => 'bg-blue-100 text-blue-800',
-                                        'processing' => 'bg-indigo-100 text-indigo-800',
-                                        'delivered' => 'bg-green-100 text-green-800',
-                                        'cancelled' => 'bg-red-100 text-red-800',
-                                    ];
-                                    $statusLabels = [
-                                        'pending' => 'In afwachting',
-                                        'approved' => 'Goedgekeurd',
-                                        'processing' => 'In verwerking',
-                                        'delivered' => 'Geleverd',
-                                        'cancelled' => 'Geannuleerd',
-                                    ];
-                                @endphp
-                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full {{ $statusColors[$order->status] ?? 'bg-gray-100 text-gray-800' }}">
-                                    {{ $statusLabels[$order->status] ?? $order->status }}
-                                </span>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                <a href="{{ route('orders.show', $order) }}" 
-                                   class="text-blue-600 hover:text-blue-900">
-                                    Bekijk Details
-                                </a>
-                            </td>
-                        </tr>
-                    @endforeach
-                </tbody>
-            </table>
-        </div>
 
-        <!-- Legend -->
-        <div class="mt-6 bg-gray-50 rounded-lg p-4">
-            <h3 class="text-sm font-medium text-gray-900 mb-2">Status uitleg:</h3>
-            <div class="grid grid-cols-2 md:grid-cols-5 gap-2 text-xs">
-                <div class="flex items-center">
-                    <span class="w-3 h-3 bg-yellow-400 rounded-full mr-2"></span>
-                    <span>In afwachting - Wacht op goedkeuring</span>
+            <!-- Delivery Details -->
+            <div class="lg:col-span-1">
+                <div class="bg-white rounded-lg shadow p-6">
+                    <h2 class="text-lg font-medium mb-4">Levering Details</h2>
+                    
+                    <!-- Delivery Date -->
+                    <div class="mb-4">
+                        <label for="requested_delivery_date" class="block text-sm font-medium text-gray-700 mb-2">
+                            Gewenste leveringsdatum <span class="text-red-500">*</span>
+                        </label>
+                        <input type="date" 
+                               id="requested_delivery_date" 
+                               name="requested_delivery_date" 
+                               value="{{ old('requested_delivery_date', now()->addDays(2)->format('Y-m-d')) }}"
+                               min="{{ now()->addDay()->format('Y-m-d') }}"
+                               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                               required>
+                        @error('requested_delivery_date')
+                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    <!-- Delivery Location -->
+                    <div class="mb-4">
+                        <label for="delivery_location" class="block text-sm font-medium text-gray-700 mb-2">
+                            Leveringslocatie
+                        </label>
+                        <input type="text" 
+                               id="delivery_location" 
+                               name="delivery_location" 
+                               value="{{ old('delivery_location', 'Hoofdvestiging') }}"
+                               placeholder="bv. Werkplaats, Magazijn, Projectlocatie..."
+                               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                        @error('delivery_location')
+                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    <!-- Notes -->
+                    <div class="mb-6">
+                        <label for="notes" class="block text-sm font-medium text-gray-700 mb-2">
+                            Opmerkingen
+                        </label>
+                        <textarea id="notes" 
+                                  name="notes" 
+                                  rows="3"
+                                  placeholder="Speciale instructies, projectnummer, etc..."
+                                  class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500">{{ old('notes') }}</textarea>
+                        @error('notes')
+                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    <!-- Submit Buttons -->
+                    <div class="space-y-3">
+                        <button type="submit" 
+                                class="w-full bg-blue-500 text-white py-3 px-4 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+                            Bestelling Plaatsen
+                        </button>
+                        
+                        <a href="{{ route('materials.cart') }}" 
+                           class="block w-full text-center bg-gray-200 text-gray-700 py-3 px-4 rounded-md hover:bg-gray-300">
+                            Terug naar Winkelwagen
+                        </a>
+                    </div>
                 </div>
-                <div class="flex items-center">
-                    <span class="w-3 h-3 bg-blue-400 rounded-full mr-2"></span>
-                    <span>Goedgekeurd - Klaar voor verwerking</span>
-                </div>
-                <div class="flex items-center">
-                    <span class="w-3 h-3 bg-indigo-400 rounded-full mr-2"></span>
-                    <span>In verwerking - Wordt klaargemaakt</span>
-                </div>
-                <div class="flex items-center">
-                    <span class="w-3 h-3 bg-green-400 rounded-full mr-2"></span>
-                    <span>Geleverd - Bestelling afgerond</span>
-                </div>
-                <div class="flex items-center">
-                    <span class="w-3 h-3 bg-red-400 rounded-full mr-2"></span>
-                    <span>Geannuleerd</span>
+
+                <!-- Info Box -->
+                <div class="mt-4 bg-blue-50 border border-blue-200 rounded-lg p-4">
+                    <div class="flex">
+                        <div class="flex-shrink-0">
+                            <svg class="h-5 w-5 text-blue-400" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"/>
+                            </svg>
+                        </div>
+                        <div class="ml-3">
+                            <h3 class="text-sm font-medium text-blue-800">
+                                Leveringstijd
+                            </h3>
+                            <p class="mt-1 text-sm text-blue-700">
+                                Bestellingen worden normaal binnen 1-2 werkdagen geleverd. 
+                                Voor spoedleveringen, neem contact op met de magazijnbeheerder.
+                            </p>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
-    @endif
+    </form>
 </div>
 @endsection
