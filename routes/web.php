@@ -57,6 +57,7 @@ Route::middleware(['auth', AdminMiddleware::class])->prefix('admin')->name('admi
     Route::get('/materials/{material}/edit', [AdminController::class, 'editMaterial'])->name('materials.edit');
     Route::patch('/materials/{material}', [AdminController::class, 'updateMaterial'])->name('materials.update');
     Route::delete('/materials/{material}', [AdminController::class, 'deleteMaterial'])->name('materials.delete');
+    Route::patch('/materials/{material}/stock', [AdminController::class, 'updateStock'])->name('materials.update-stock');
     
     // Order management
     Route::get('/orders', [AdminController::class, 'orders'])->name('orders');

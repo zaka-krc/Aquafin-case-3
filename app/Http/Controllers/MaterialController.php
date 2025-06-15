@@ -25,6 +25,26 @@ class MaterialController extends Controller
             $query->search($request->search);
         }
         
+        // Voorraad filter
+        if ($request->has('stock') && $request->stock != 'all') {
+            switch($request->stock) {
+                case 'available':
+                    $query->where('current_stock', '>', function($q) {
+                        $q->select('minimum_stock')
+                          ->from('materials as m2')
+                          ->whereColumn('m2.id', 'materials.id');
+                    });
+                    break;
+                case 'low':
+                    $query->whereColumn('current_stock', '<=', 'minimum_stock')
+                          ->where('current_stock', '>', 0);
+                    break;
+                case 'out':
+                    $query->where('current_stock', 0);
+                    break;
+            }
+        }
+        
         $materials = $query->get();
 
         return view('materials.index', compact('categories', 'materials'));

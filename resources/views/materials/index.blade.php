@@ -33,18 +33,26 @@
                 @endforeach
             </div>
             
-            <!-- Beschikbaarheid Filter -->
+            <!-- Voorraad Status Filter -->
             <div class="mt-6">
                 <h4 class="font-medium text-sm text-gray-700 mb-3">Voorraad Status</h4>
                 <div class="space-y-2">
-                    <label class="flex items-center">
-                        <input type="checkbox" checked disabled class="rounded text-green-500">
-                        <span class="ml-2 text-sm">Op voorraad</span>
-                    </label>
-                    <label class="flex items-center">
-                        <input type="checkbox" disabled class="rounded text-yellow-500">
-                        <span class="ml-2 text-sm">Lage voorraad</span>
-                    </label>
+                    <a href="{{ route('materials.index', ['category' => request('category'), 'search' => request('search'), 'stock' => 'all']) }}" 
+                       class="block px-3 py-2 rounded {{ !request('stock') || request('stock') == 'all' ? 'bg-blue-100 text-blue-700' : 'hover:bg-gray-100' }}">
+                        Alle voorraad statussen
+                    </a>
+                    <a href="{{ route('materials.index', ['category' => request('category'), 'search' => request('search'), 'stock' => 'available']) }}" 
+                       class="block px-3 py-2 rounded {{ request('stock') == 'available' ? 'bg-green-100 text-green-700' : 'hover:bg-gray-100' }}">
+                        <span class="inline-block w-2 h-2 bg-green-500 rounded-full mr-2"></span>Op voorraad
+                    </a>
+                    <a href="{{ route('materials.index', ['category' => request('category'), 'search' => request('search'), 'stock' => 'low']) }}" 
+                       class="block px-3 py-2 rounded {{ request('stock') == 'low' ? 'bg-yellow-100 text-yellow-700' : 'hover:bg-gray-100' }}">
+                        <span class="inline-block w-2 h-2 bg-yellow-500 rounded-full mr-2"></span>Lage voorraad
+                    </a>
+                    <a href="{{ route('materials.index', ['category' => request('category'), 'search' => request('search'), 'stock' => 'out']) }}" 
+                       class="block px-3 py-2 rounded {{ request('stock') == 'out' ? 'bg-red-100 text-red-700' : 'hover:bg-gray-100' }}">
+                        <span class="inline-block w-2 h-2 bg-red-500 rounded-full mr-2"></span>Geen voorraad
+                    </a>
                 </div>
             </div>
         </div>
