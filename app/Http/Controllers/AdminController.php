@@ -51,11 +51,19 @@ class AdminController extends Controller
         return view('admin.materials', compact('materials'));
     }
 
+    // Toon individueel materiaal
+    public function showMaterial(Material $material)
+    {
+        $material->load(['category', 'orderItems.order.user']);
+        
+        return view('admin.materials.show', compact('material'));
+    }
+
     // Materiaal toevoegen form
     public function createMaterial()
     {
         $categories = Category::all();
-        return view('admin.create-material', compact('categories'));
+        return view('admin.materials.create', compact('categories'));
     }
 
     // Materiaal opslaan
@@ -78,31 +86,33 @@ class AdminController extends Controller
         return redirect()->route('admin.materials')->with('success', 'Materiaal toegevoegd!');
     }
 
-    // Materiaal bewerken form
-    public function editMaterial(Material $material)
+    // Materiaal bewerken form EN verwerken van updates
+    public function editMaterial(Request $request, Material $material)
     {
+        // Als het een POST request is (form submission)
+        if ($request->isMethod('post')) {
+            $request->validate([
+                'name' => 'required|string|max:255',
+                'category_id' => 'required|exists:categories,id',
+                'unit' => 'required|string|max:50',
+                'description' => 'nullable|string',
+                'article_number' => 'nullable|string|unique:materials,article_number,' . $material->id,
+                'supplier' => 'nullable|string',
+                'price' => 'nullable|numeric|min:0',
+                'minimum_stock' => 'required|integer|min:0',
+                'current_stock' => 'required|integer|min:0',
+                'is_available' => 'boolean',
+            ]);
+
+            // Update het materiaal
+            $material->update($request->all());
+
+            return redirect()->route('admin.materials')->with('success', 'Materiaal bijgewerkt!');
+        }
+        
+        // Als het een GET request is (toon form)
         $categories = Category::all();
-        return view('admin.edit-material', compact('material', 'categories'));
-    }
-
-    // Materiaal updaten
-    public function updateMaterial(Request $request, Material $material)
-    {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'category_id' => 'required|exists:categories,id',
-            'unit' => 'required|string|max:50',
-            'description' => 'nullable|string',
-            'article_number' => 'nullable|string|unique:materials,article_number,' . $material->id,
-            'supplier' => 'nullable|string',
-            'price' => 'nullable|numeric|min:0',
-            'minimum_stock' => 'required|integer|min:0',
-            'current_stock' => 'required|integer|min:0',
-        ]);
-
-        $material->update($request->all());
-
-        return redirect()->route('admin.materials')->with('success', 'Materiaal bijgewerkt!');
+        return view('admin.materials.edit', compact('material', 'categories'));
     }
 
     // Materiaal verwijderen
@@ -139,12 +149,13 @@ class AdminController extends Controller
     }
 
     // Order detail voor admin
-    public function orderShow(Order $order)
+    public function showOrder(Order $order)
     {
         $order->load(['orderItems.material.category', 'user']);
-        return view('admin.order-show', compact('order'));
+        return view('admin.orders.show', compact('order'));
     }
 
+    // Update order status
     public function updateOrderStatus(Request $request, Order $order)
     {
         $request->validate([
@@ -153,7 +164,7 @@ class AdminController extends Controller
         
         $oldStatus = $order->status;
         
-        // 🔍 SPECIALE BEHANDELING voor order goedkeuring
+        // SPECIALE BEHANDELING voor order goedkeuring
         if ($request->status == 'approved' && $oldStatus != 'approved') {
             
             // Check voorraad voor alle items

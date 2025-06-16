@@ -20,7 +20,7 @@ Route::middleware('auth')->group(function () {
     
     // Dashboard
     Route::get('/dashboard', function () {
-        return view('dashboard'); // Gebruik dashboard view
+        return view('dashboard');
     })->name('dashboard');
     
     // Materials (User functionality)
@@ -54,14 +54,14 @@ Route::middleware(['auth', AdminMiddleware::class])->prefix('admin')->name('admi
     Route::get('/materials', [AdminController::class, 'materials'])->name('materials');
     Route::get('/materials/create', [AdminController::class, 'createMaterial'])->name('materials.create');
     Route::post('/materials', [AdminController::class, 'storeMaterial'])->name('materials.store');
-    Route::get('/materials/{material}/edit', [AdminController::class, 'editMaterial'])->name('materials.edit');
-    Route::patch('/materials/{material}', [AdminController::class, 'updateMaterial'])->name('materials.update');
+    Route::get('/materials/{material}', [AdminController::class, 'showMaterial'])->name('materials.show');
+    Route::match(['GET', 'POST'], '/materials/{material}/edit', [AdminController::class, 'editMaterial'])->name('materials.edit');
     Route::delete('/materials/{material}', [AdminController::class, 'deleteMaterial'])->name('materials.delete');
     Route::patch('/materials/{material}/stock', [AdminController::class, 'updateStock'])->name('materials.update-stock');
     
     // Order management
     Route::get('/orders', [AdminController::class, 'orders'])->name('orders');
-    Route::get('/orders/{order}', [AdminController::class, 'orderShow'])->name('orders.show');
+    Route::get('/orders/{order}', [AdminController::class, 'showOrder'])->name('orders.show');
     Route::patch('/orders/{order}/status', [AdminController::class, 'updateOrderStatus'])->name('orders.update-status');
 });
 
