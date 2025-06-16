@@ -145,32 +145,67 @@ class AdminController extends Controller
         return view('admin.order-show', compact('order'));
     }
 
-    // Order status bijwerken
     public function updateOrderStatus(Request $request, Order $order)
     {
         $request->validate([
             'status' => 'required|in:pending,approved,processing,delivered,cancelled'
         ]);
-
+        
         $oldStatus = $order->status;
-
-        $order->update(['status' => $request->status]);
-
-        if ($request->status === 'approved' && $oldStatus !== 'approved') {
+        
+        // 🔍 SPECIALE BEHANDELING voor order goedkeuring
+        if ($request->status == 'approved' && $oldStatus != 'approved') {
+            
+            // Check voorraad voor alle items
+            $stockIssues = [];
+            
             foreach ($order->orderItems as $item) {
-                if ($item->material->current_stock >= $item->quantity) {
-                    $item->material->decreaseStock($item->quantity);
-                    \Log::info("Stock decreased for material {$item->material->name}: -{$item->quantity}");
-                } else {
-                    $item->material->decreaseStock($item->quantity);
-                    session()->flash('warning', "Materiaal '{$item->material->name}' heeft onvoldoende voorraad!");
+                // Fresh data ophalen
+                $material = Material::find($item->material_id);
+                
+                if (!$material || !$material->is_available) {
+                    $stockIssues[] = "{$item->material->name}: niet meer beschikbaar";
+                    continue;
+                }
+                    
+                if ($material->current_stock < $item->quantity) {
+                    $stockIssues[] = "{$material->name}: gevraagd {$item->quantity} {$item->unit}, beschikbaar {$material->current_stock} {$material->unit}";
                 }
             }
-            session()->flash('success', 'Order goedgekeurd en voorraad aangepast!');
-        } else {
-            session()->flash('success', 'Order status bijgewerkt!');
+            
+            if (!empty($stockIssues)) {
+                return redirect()->back()->with('error', 
+                    '❌ Kan order niet goedkeuren - voorraad problemen:<br>• ' . implode('<br>• ', $stockIssues) .
+                    '<br><br>💡 <strong>Oplossing:</strong> Pas eerst de voorraad aan via materiaal beheer.'
+                );
+            }
+            
+            // Update order status
+            $order->update(['status' => $request->status]);
+            
+            // Verminder voorraad
+            foreach ($order->orderItems as $item) {
+                $item->material->decreaseStock($item->quantity);
+            }
+            
+            return redirect()->back()->with('success', 
+                "✅ Order {$order->order_number} goedgekeurd! Voorraad is automatisch aangepast."
+            );
         }
-
-        return redirect()->back();
+        
+        // Voor andere status updates
+        $order->update(['status' => $request->status]);
+        
+        $statusLabels = [
+            'pending' => 'In afwachting',
+            'approved' => 'Goedgekeurd', 
+            'processing' => 'In verwerking',
+            'delivered' => 'Geleverd',
+            'cancelled' => 'Geannuleerd'
+        ];
+        
+        return redirect()->back()->with('success', 
+            "Order status gewijzigd naar: " . ($statusLabels[$request->status] ?? $request->status)
+        );
     }
 }

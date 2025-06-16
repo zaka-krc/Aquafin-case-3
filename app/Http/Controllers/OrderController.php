@@ -21,7 +21,8 @@ class OrderController extends Controller
         return view('orders.create', compact('cart'));
     }
 
-    // Bestelling opslaan
+    // Vervang alleen deze method in je OrderController:
+
     public function store(Request $request)
     {
         $request->validate([
@@ -36,7 +37,35 @@ class OrderController extends Controller
             return redirect()->route('materials.index')->with('error', 'Winkelwagen is leeg!');
         }
 
-        // Bestelling aanmaken
+        // 🔍 KRITIEKE VALIDATIE: Check voorraad vlak voor bestelling
+        $stockErrors = [];
+        foreach($cart as $item) {
+            $material = Material::find($item['material_id']);
+            
+            if (!$material) {
+                $stockErrors[] = "❌ '{$item['name']}' bestaat niet meer";
+                continue;
+            }
+            
+            if (!$material->is_available) {
+                $stockErrors[] = "❌ '{$material->name}' is niet meer beschikbaar";
+                continue;
+            }
+            
+            if ($material->current_stock < $item['quantity']) {
+                $stockErrors[] = "❌ '{$material->name}': gevraagd {$item['quantity']} {$item['unit']}, beschikbaar {$material->current_stock} {$material->unit}";
+            }
+        }
+        
+        // Als er voorraad problemen zijn, stop en toon errors
+        if (!empty($stockErrors)) {
+            return redirect()->route('materials.cart')->with('error', 
+                'Voorraad problemen gevonden:<br>' . implode('<br>', $stockErrors) . 
+                '<br><br>💡 <strong>Tip:</strong> Ga terug naar je winkelwagen om de hoeveelheden aan te passen.'
+            );
+        }
+
+        // Bestelling aanmaken (alleen als alle voorraad OK is)
         $order = Order::create([
             'user_id' => auth()->id(),
             'order_number' => Order::generateOrderNumber(),
@@ -61,7 +90,10 @@ class OrderController extends Controller
         // Winkelwagen leegmaken
         session()->forget('cart');
 
-        return redirect()->route('orders.show', $order)->with('success', 'Bestelling verzonden!');
+        return redirect()->route('orders.show', $order)->with('success', 
+            "🎉 Bestelling {$order->order_number} succesvol verzonden! " .
+            "Je krijgt bericht zodra deze is goedgekeurd."
+        );
     }
 
     // Bestelling bekijken

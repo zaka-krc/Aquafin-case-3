@@ -87,13 +87,13 @@
                             <a href="{{ route('materials.show', $material) }}" class="block p-4">
                                 <!-- Image placeholder met voorraad indicator -->
                                 <div class="w-full h-32 bg-gray-200 rounded mb-4 relative">
-                                    @if($material->current_stock <= $material->minimum_stock)
-                                        <span class="absolute top-2 right-2 bg-yellow-500 text-white text-xs px-2 py-1 rounded">
-                                            Lage voorraad
-                                        </span>
-                                    @elseif($material->current_stock == 0)
+                                    @if($material->current_stock == 0)
                                         <span class="absolute top-2 right-2 bg-red-500 text-white text-xs px-2 py-1 rounded">
                                             Niet op voorraad
+                                        </span>
+                                    @elseif($material->current_stock <= $material->minimum_stock)
+                                        <span class="absolute top-2 right-2 bg-yellow-500 text-white text-xs px-2 py-1 rounded">
+                                            Lage voorraad
                                         </span>
                                     @endif
                                 </div>

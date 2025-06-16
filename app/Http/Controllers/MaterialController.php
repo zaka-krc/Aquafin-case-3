@@ -63,15 +63,61 @@ class MaterialController extends Controller
         return view('materials.show', compact('material', 'relatedMaterials'));
     }
 
-    // Voeg materiaal toe aan winkelwagen (session)
+        // Vervang alleen deze method in je MaterialController:
+
+    public function cart()
+    {
+            $cart = session()->get('cart', []);
+            return view('materials.cart', compact('cart'));
+        }
+
+
     public function addToCart(Request $request, Material $material)
     {
         $request->validate([
             'quantity' => 'required|integer|min:1'
         ]);
 
+        // Check 1: Is materiaal beschikbaar?
+        if (!$material->is_available) {
+            return redirect()->back()->with('error', 'Dit materiaal is momenteel niet beschikbaar.');
+        }
+
+        // Check 2: Is er voorraad?
+        if ($material->current_stock <= 0) {
+            return redirect()->back()->with('error', 'Dit materiaal is niet op voorraad.');
+        }
+
         $cart = session()->get('cart', []);
         
+        // Check 3: Bereken totale hoeveelheid (bestaand in cart + nieuw)
+        $currentCartQuantity = isset($cart[$material->id]) ? $cart[$material->id]['quantity'] : 0;
+        $totalWanted = $currentCartQuantity + $request->quantity;
+        
+        // Check 4: Is totale hoeveelheid beschikbaar?
+        if ($totalWanted > $material->current_stock) {
+            if ($currentCartQuantity > 0) {
+                return redirect()->back()->with('error', 
+                    "❌ Te veel gevraagd! Je hebt al {$currentCartQuantity} {$material->unit} in je winkelwagen. " .
+                    "Totaal gevraagd zou worden: {$totalWanted} {$material->unit}. " .
+                    "Beschikbaar: {$material->current_stock} {$material->unit}."
+                );
+            } else {
+                return redirect()->back()->with('error', 
+                    "❌ Onvoldoende voorraad. Gevraagd: {$request->quantity} {$material->unit}, " .
+                    "beschikbaar: {$material->current_stock} {$material->unit}."
+                );
+            }
+        }
+        
+        // Check 5: Is gevraagde hoeveelheid niet te veel?
+        if ($request->quantity > $material->current_stock) {
+            return redirect()->back()->with('error', 
+                "❌ Onvoldoende voorraad. Beschikbaar: {$material->current_stock} {$material->unit}"
+            );
+        }
+        
+        // Alles OK - voeg toe aan cart
         if(isset($cart[$material->id])) {
             $cart[$material->id]['quantity'] += $request->quantity;
         } else {
@@ -86,26 +132,9 @@ class MaterialController extends Controller
         
         session()->put('cart', $cart);
         
-        return redirect()->back()->with('success', 'Materiaal toegevoegd aan winkelwagen!');
-    }
-
-    // Winkelwagen bekijken
-    public function cart()
-    {
-        $cart = session()->get('cart', []);
-        return view('materials.cart', compact('cart'));
-    }
-
-    // Item uit winkelwagen verwijderen
-    public function removeFromCart($materialId)
-    {
-        $cart = session()->get('cart', []);
-        
-        if(isset($cart[$materialId])) {
-            unset($cart[$materialId]);
-            session()->put('cart', $cart);
-        }
-        
-        return redirect()->back()->with('success', 'Item verwijderd uit winkelwagen!');
+        return redirect()->back()->with('success', 
+            "✅ {$request->quantity} {$material->unit} {$material->name} toegevoegd! " .
+            "(Totaal in winkelwagen: {$cart[$material->id]['quantity']} {$material->unit})"
+        );
     }
 }
