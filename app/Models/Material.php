@@ -10,7 +10,6 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class Material extends Model
 {
     use HasFactory;
-    // VERWIJDERD: SoftDeletes
 
     protected $fillable = [
         'category_id',
@@ -21,13 +20,15 @@ class Material extends Model
         'supplier',
         'article_number',
         'minimum_stock',
+        'current_stock', 
         'is_available'
     ];
 
     protected $casts = [
         'is_available' => 'boolean',
         'price' => 'decimal:2',
-        'minimum_stock' => 'integer'
+        'minimum_stock' => 'integer',
+        'current_stock' => 'integer'  
     ];
 
     public function category(): BelongsTo
@@ -57,5 +58,28 @@ class Material extends Model
     public function getFullNameAttribute(): string
     {
         return $this->name . ($this->description ? " - {$this->description}" : '');
+    }
+    
+    // NIEUWE METHODS VOOR VOORRAAD BEHEER
+    public function isLowStock(): bool
+    {
+        return $this->current_stock <= $this->minimum_stock;
+    }
+    
+    public function isOutOfStock(): bool
+    {
+        return $this->current_stock <= 0;
+    }
+    
+    public function decreaseStock(int $amount): void
+    {
+        $this->current_stock = max(0, $this->current_stock - $amount);
+        $this->save();
+    }
+    
+    public function increaseStock(int $amount): void
+    {
+        $this->current_stock += $amount;
+        $this->save();
     }
 }

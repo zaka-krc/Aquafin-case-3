@@ -20,20 +20,20 @@ class AdminController extends Controller
     public function materials(Request $request)
     {
         $query = Material::with('category');
-        
+
         // Search
         if ($request->has('search') && $request->search != '') {
             $query->search($request->search);
         }
-        
+
         // Category filter
         if ($request->has('category') && $request->category != '') {
             $query->where('category_id', $request->category);
         }
-        
+
         // Status filter
         if ($request->has('status') && $request->status != '') {
-            switch($request->status) {
+            switch ($request->status) {
                 case 'available':
                     $query->where('is_available', true)->where('current_stock', '>', 0);
                     break;
@@ -45,9 +45,9 @@ class AdminController extends Controller
                     break;
             }
         }
-        
+
         $materials = $query->orderBy('name')->paginate(20)->withQueryString();
-        
+
         return view('admin.materials', compact('materials'));
     }
 
@@ -111,56 +111,66 @@ class AdminController extends Controller
         $material->delete();
         return redirect()->route('admin.materials')->with('success', 'Materiaal verwijderd!');
     }
-    
+
     // Quick stock update
     public function updateStock(Request $request, Material $material)
     {
         $request->validate([
             'current_stock' => 'required|integer|min:0'
         ]);
-        
+
         $material->update(['current_stock' => $request->current_stock]);
-        
+
         return redirect()->route('admin.materials')->with('success', 'Voorraad bijgewerkt!');
     }
-    
+
     // Orders management
     public function orders(Request $request)
     {
         $query = Order::with(['user', 'orderItems']);
-        
+
         if ($request->has('status') && $request->status != '') {
             $query->where('status', $request->status);
         }
-        
+
         $orders = $query->orderBy('created_at', 'desc')->paginate(20);
-        
+
         return view('admin.orders', compact('orders'));
     }
-    
+
     // Order detail voor admin
     public function orderShow(Order $order)
     {
         $order->load(['orderItems.material.category', 'user']);
         return view('admin.order-show', compact('order'));
     }
-    
-    // Update order status
+
+    // Order status bijwerken
     public function updateOrderStatus(Request $request, Order $order)
     {
         $request->validate([
             'status' => 'required|in:pending,approved,processing,delivered,cancelled'
         ]);
-        
+
+        $oldStatus = $order->status;
+
         $order->update(['status' => $request->status]);
-        
-        // Als order wordt goedgekeurd, verminder de voorraad
-        if ($request->status == 'approved' && $order->status != 'approved') {
+
+        if ($request->status === 'approved' && $oldStatus !== 'approved') {
             foreach ($order->orderItems as $item) {
-                $item->material->decreaseStock($item->quantity);
+                if ($item->material->current_stock >= $item->quantity) {
+                    $item->material->decreaseStock($item->quantity);
+                    \Log::info("Stock decreased for material {$item->material->name}: -{$item->quantity}");
+                } else {
+                    $item->material->decreaseStock($item->quantity);
+                    session()->flash('warning', "Materiaal '{$item->material->name}' heeft onvoldoende voorraad!");
+                }
             }
+            session()->flash('success', 'Order goedgekeurd en voorraad aangepast!');
+        } else {
+            session()->flash('success', 'Order status bijgewerkt!');
         }
-        
-        return redirect()->back()->with('success', 'Order status bijgewerkt!');
+
+        return redirect()->back();
     }
 }
