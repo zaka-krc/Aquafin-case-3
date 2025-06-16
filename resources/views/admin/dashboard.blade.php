@@ -152,22 +152,40 @@
         </div>
     </div>
 
-    <!-- Low Stock Alert -->
+    <!-- Low Stock & Out of Stock Alerts -->
     @php
-        $lowStockMaterials = \App\Models\Material::whereColumn('minimum_stock', '>', 'current_stock')
-            ->orWhere('current_stock', 0)
-            ->take(5)
+        $lowStockMaterials = \App\Models\Material::where('current_stock', '>', 0)
+            ->whereColumn('current_stock', '<=', 'minimum_stock')
+            ->orderBy('current_stock')
+            ->get();
+
+        $outOfStockMaterials = \App\Models\Material::where('current_stock', 0)
+            ->orderBy('name')
             ->get();
     @endphp
-    
+
     @if($lowStockMaterials->isNotEmpty())
-        <div class="bg-red-50 border border-red-200 rounded-lg p-6">
-            <h3 class="text-lg font-medium text-red-900 mb-4">⚠️ Lage Voorraad Waarschuwing</h3>
+        <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-6 mb-6">
+            <h3 class="text-lg font-medium text-yellow-900 mb-4">⚠️ Lage Voorraad</h3>
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 @foreach($lowStockMaterials as $material)
                     <div class="bg-white rounded p-3">
                         <p class="font-medium">{{ $material->name }}</p>
-                        <p class="text-sm text-gray-600">Voorraad: {{ $material->current_stock ?? 0 }} / Min: {{ $material->minimum_stock }}</p>
+                        <p class="text-sm text-gray-600">Voorraad: {{ $material->current_stock }} / Min: {{ $material->minimum_stock }}</p>
+                    </div>
+                @endforeach
+            </div>
+        </div>
+    @endif
+
+    @if($outOfStockMaterials->isNotEmpty())
+        <div class="bg-red-50 border border-red-200 rounded-lg p-6">
+            <h3 class="text-lg font-medium text-red-900 mb-4">❌ Niet op voorraad</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                @foreach($outOfStockMaterials as $material)
+                    <div class="bg-white rounded p-3">
+                        <p class="font-medium">{{ $material->name }}</p>
+                        <p class="text-sm text-gray-600">Voorraad: 0 / Min: {{ $material->minimum_stock }}</p>
                     </div>
                 @endforeach
             </div>
