@@ -20,7 +20,7 @@ class UserSeeder extends Seeder
 
         User::create([
             'name' => 'Test',
-            'email' => 'test@aquafin.be',
+            'email' => 'jan@aquafin.be',
             'password' => Hash::make('password'),
             'role' => 'user',
             'email_verified_at' => now()

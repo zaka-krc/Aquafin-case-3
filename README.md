@@ -155,6 +155,61 @@ Het systeem organiseert materialen in 6 hoofdcategorieën:
 - Voorraad beheren
 - Systeem statistieken inzien (wat betreft de voorraad)
 
+## 🔧 Voorraad handmatig instellen
+
+Standaard worden de voorraden bij het vullen van de database willekeurig gekozen. Om zelf de voorraadniveaus te bepalen, volg je deze stappen:
+
+### 1. Voorraad instellen via de seeder
+
+- Open het bestand `database/seeders/MaterialSeeder.php`
+- Zoek de voorraadinstelling:
+    ```php
+    'current_stock' => rand(0, 100),
+    ```
+- Vervang deze met een vast getal:
+    ```php
+    'current_stock' => 50,
+    ```
+- Herhaal voor elk materiaal indien gewenst
+- Voer de seeder opnieuw uit:
+    ```bash
+    php artisan db:seed --class=MaterialSeeder
+    ```
+
+### 2. Voorraad aanpassen via de applicatie
+
+1. Log in als beheerder
+2. Navigeer naar "Materialen beheren" in het dashboard
+3. Selecteer het materiaal
+4. Pas de voorraad aan
+5. Sla de wijzigingen op
+
+
+## 👤 Gebruikers Toevoegen
+
+### Via Database Seeder
+
+Om testgebruikers toe te voegen, volg deze stappen:
+
+1. **Open de seeder:**
+    ```bash
+    database/seeders/DatabaseSeeder.php
+    ```
+
+2. **Voeg gebruikers toe:**
+    ```php
+    \App\Models\User::create([
+         'name' => 'Jan Jansen',
+         'email' => 'jan@example.com',
+         'password' => bcrypt('wachtwoord123'),
+         'role' => 'user',
+    ]);
+    ```
+
+3. **Voer de seeder uit:**
+    ```bash
+    php artisan db:seed
+    ```
 
 
 ## 🚀 Aan de Slag
