@@ -42,7 +42,7 @@
                         
                         <div class="bg-white rounded-lg border p-4">
                             <div class="w-full h-48 bg-gray-100 rounded-lg overflow-hidden flex items-center justify-center">
-                                <img src="{{ \App\Helpers\MaterialImageHelper::getImageUrl($material->name) }}" 
+                                <img id="current-material-image" src="{{ \App\Helpers\MaterialImageHelper::getImageUrl($material->name) }}"
                                      alt="{{ $material->name }}" 
                                      class="w-full h-full object-cover"
                                      onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
@@ -58,9 +58,17 @@
                             
                             <div class="mt-4 text-center">
                                 <button type="button" 
-                                        onclick="refreshImage()" 
-                                        class="inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-                                    🔄 Afbeelding Verversen
+                                    onclick="refreshImage()" 
+                                    class="inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                                🔄 Afbeelding Verversen
+                                </button> 
+                            </div>
+
+                            <div class="mt-4 text-center">
+                                <button type="button" 
+                                    onclick="resetImage()" 
+                                    class="inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                                ↩️ Origineel Herstellen
                                 </button>
                             </div>
                         </div>
@@ -502,12 +510,45 @@ function setStockToMinimum() {
 
 function refreshImage() {
     const materialName = document.getElementById('name').value;
-    if (materialName) {
-        // Reload the page to refresh image (simple approach)
-        // In production, you might want to use AJAX
-        location.reload();
-    } else {
+    if (!materialName) {
         alert('Voer eerst een materiaal naam in');
+        return;
+    }
+
+    // Maak een verborgen file input
+    const fileInput = document.createElement('input');
+    fileInput.type = 'file';
+    fileInput.accept = 'image/*';
+    fileInput.style.display = 'none';
+    
+    // Wanneer een bestand wordt geselecteerd
+    fileInput.onchange = function(event) {
+        const file = event.target.files[0];
+        if (file) {
+            // Maak een URL van het bestand
+            const imageUrl = URL.createObjectURL(file);
+            
+            // Update de afbeelding op de pagina
+            const imageElement = document.getElementById('current-material-image');
+            if (imageElement) {
+                imageElement.src = imageUrl;
+                imageElement.style.display = 'block'; // Zorg dat de img zichtbaar is
+                imageElement.nextElementSibling.style.display = 'none'; // Verberg de "geen afbeelding" placeholder
+            }
+        }
+    };
+    
+    // Open file selector
+    fileInput.click();
+}
+
+function resetImage() {
+    const imageElement = document.getElementById('current-material-image');
+    if (imageElement) {
+        // Zet terug naar de originele afbeelding
+        imageElement.src = '{{ \App\Helpers\MaterialImageHelper::getImageUrl($material->name) }}';
+        imageElement.style.display = 'block';
+        imageElement.nextElementSibling.style.display = 'none';
     }
 }
 </script>
