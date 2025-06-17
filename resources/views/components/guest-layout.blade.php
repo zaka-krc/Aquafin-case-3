@@ -19,7 +19,7 @@
             <!-- Logo -->
             <div class="mb-6">
                 <div class="text-4xl font-bold text-blue-600 flex items-center">
-                    🌊 Aquafin
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/d7/Logo_Aquafin.png/1280px-Logo_Aquafin.png" alt="Aquafin Logo" style="height: 200px; width: auto;">
                 </div>
                 <p class="text-center text-gray-600 mt-2">Materiaal Beheer Systeem</p>
             </div>
