@@ -1,61 +1,212 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Aquafin Materiaal Beheer Systeem
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+## 📋 Overzicht
 
-## About Laravel
+Het Aquafin Materiaal Beheer Systeem is een webapplicatie ontwikkeld voor het efficiënt beheren en bestellen van materialen door onderhoudstechniekers. Het systeem zorgt ervoor dat techniekers dagelijks de juiste materialen, gereedschappen en beschermingsmiddelen kunnen bestellen voor hun werkzaamheden aan zwembaden en rioleringssystemen.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## 🛠️ Installatie
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+Volg deze stappen om het project lokaal te installeren:
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+1. **Zorg dat je [Composer](https://getcomposer.org/) en [Node.js](https://nodejs.org/) hebt geïnstalleerd.**
+2. **Download of kopieer dit project naar je computer.**
+3. **Open een terminal in de projectmap.**
 
-## Learning Laravel
+4. **Installeer de PHP- en JavaScript-afhankelijkheden:**
+   ```bash
+   composer install
+   npm install
+   cp .env.example .env
+   php artisan key:generate
+   php artisan migrate
+   php artisan db:seed
+   php artisan serve
+   ```
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+## 🎯 Hoofdfunctionaliteiten
 
-## Laravel Sponsors
+### Voor Techniekers (Gebruikers)
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+#### 1. **Materialen Bekijken**
+- Blader door 150+ verschillende materialen in 6 categorieën
+- Zoek specifieke materialen via de zoekbalk
+- Filter op categorie of voorraadstatus
+- Bekijk real-time voorraadinformatie
 
-### Premium Partners
+#### 2. **Bestellingen Plaatsen**
+- Voeg materialen toe aan je winkelwagen
+- Kies gewenste leverdatum (minimaal 1 dag vooruit)
+- Selecteer leverlocatie (hoofdvestiging, werkplaats, projectlocatie, etc.)
+- Voeg opmerkingen toe voor speciale instructies
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+#### 3. **Bestellingen Volgen**
+- Bekijk al je geplaatste bestellingen
+- Volg de status van elke bestelling
+- Zie wanneer materialen geleverd worden
 
-## Contributing
+### Voor Beheerders (Admins)
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+#### 1. **Materiaal Beheer**
+- Voeg nieuwe materialen toe aan het systeem
+- Verwijder verouderde materialen
+- Pas materiaalinformatie aan (prijs, leverancier, etc.)
+- Beheer voorraadniveaus
 
-## Code of Conduct
+#### 2. **Order Management**
+- Bekijk alle inkomende bestellingen
+- Keur bestellingen goed of wijs af
+- Volg de voortgang van bestellingen
+- Voorraad wordt automatisch verminderd bij goedkeuring
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+#### 3. **Dashboard Overzicht**
+- Zie statistieken over materialen en bestellingen
+- Ontvang waarschuwingen voor lage voorraad
+- Monitor materialen die niet op voorraad zijn
 
-## Security Vulnerabilities
+## 📂 Materiaal Categorieën
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+Het systeem organiseert materialen in 6 hoofdcategorieën:
 
-## License
+1. **🧰 Bevestigingsmateriaal**
+2. **👷‍♂️ Persoonlijke Beschermingsmiddelen (PBM)**
+3. **🔧 Gereedschap**
+4. **⚙️ Technische Onderhoudsmaterialen**
+5. **🛠️ Specifieke Aquafin/Riolering Tools**
+6. **📦 Diversen/Verbruiksgoederen**
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+## 🔄 Bestelproces Workflow
+
+### 1. **Bestelling Plaatsen** (Technieker)
+- Selecteer benodigde materialen
+- Controleer beschikbaarheid
+- Plaats bestelling met gewenste leverdatum
+
+### 2. **In Afwachting** 🟡
+- Bestelling wacht op goedkeuring van magazijnbeheerder
+
+### 3. **Goedgekeurd** 🔵 (Admin)
+- Admin controleert voorraad en keurt goed
+- Voorraad wordt automatisch verminderd
+
+### 4. **In Verwerking** 🟣
+- Magazijn bereidt bestelling voor
+
+### 5. **Geleverd** 🟢
+- Materialen zijn afgeleverd op locatie
+
+## 🚨 Voorraad Indicatoren
+
+- **🟢 Op voorraad**: Voldoende materiaal beschikbaar
+- **🟡 Lage voorraad**: Voorraad onder minimum niveau
+- **🔴 Geen voorraad**: Materiaal tijdelijk niet beschikbaar
+
+## 💡 Belangrijke Features
+
+### Slimme Voorraadcontrole
+- Automatische controle op beschikbaarheid
+- Voorkomt overbestelling van materialen
+- Real-time voorraad updates
+- Waarschuwingen bij lage voorraad
+
+### Flexibele Levering
+- 6 verschillende leverlocaties:
+  - 🏢 Hoofdvestiging
+  - 🔧 Werkplaats
+  - 📦 Magazijn
+  - 🚧 Projectlocatie
+  - 🚐 Servicewagen
+  - 📍 Anders (zelf specificeren)
+
+### Gebruiksvriendelijke Interface
+- Intuïtieve navigatie
+- Responsive design (werkt op alle apparaten)
+- Snelle zoekfunctie
+- Overzichtelijke categorieën
+
+## 📱 Gebruikstips
+
+### Voor Techniekers:
+1. **Check voorraad** - Controleer altijd de beschikbaarheid voor het bestellen
+2. **Plan vooruit** - Bestel ruim op tijd voor geplande werkzaamheden
+3. **Gebruik filters** - Vind snel wat je zoekt met categorie- en voorraadfilters
+4. **Wees specifiek** - Voeg duidelijke instructies toe in het opmerkingenveld
+5. **Controleer leverdatum** - Zorg dat materialen op tijd geleverd worden
+
+### Voor Admins:
+1. **Dagelijkse controle** - Check nieuwe bestellingen elke werkdag
+2. **Voorraad monitoring** - Houd lage voorraad items in de gaten
+3. **Snelle goedkeuring** - Verwerk spoedbestellingen met prioriteit
+4. **Data onderhoud** - Update regelmatig prijzen en leveranciersinformatie
+5. **Dashboard gebruik** - Gebruik het dashboard voor totaaloverzicht
+
+## 🔐 Toegangsniveaus
+
+### Gebruiker (Technieker)
+- Materialen bekijken
+- Bestellingen plaatsen
+- Eigen bestellingen inzien
+
+### Administrator
+- Alle gebruikersfuncties
+- Materiaal toevoegen/wijzigen/verwijderen
+- Bestellingen goedkeuren/afwijzen
+- Voorraad beheren
+- Systeem statistieken inzien (wat betreft de voorraad)
+
+
+
+## 🚀 Aan de Slag
+
+1. **Inloggen** - Gebruik je toegewezen gebruikersnaam en wachtwoord
+2. **Dashboard** - Start vanaf het hoofddashboard
+3. **Materialen bekijken** - Ga naar "Bekijk Voorraad"
+4. **Bestellen** - Voeg items toe aan winkelwagen en rond bestelling af
+5. **Volgen** - Check status onder "Mijn Bestellingen"
+
+
+## 👥 Takenverdeling
+
+Hieronder vind je een overzicht van wie verantwoordelijk is voor welke onderdelen van het project:
+
+| Taak                        | Verantwoordelijke(n)         |
+|-----------------------------|------------------------------|
+| Backend ontwikkeling        | Zakaria Korchi (code), Anas Chakkour (concept) |
+| Frontend ontwikkeling       | Zakaria Korchi, Ludger De Sousa Lima (CSS & afbeeldingenbeheer) |
+| Database ontwerp & beheer   | Zakaria Korchi |
+| Materiaalbeheer (inhoud)    | Aquafin, Erasmushogschool |
+| Testen & kwaliteitscontrole | Zakaria Korchi            |
+| Documentatie                | Zakaria Korchi |
+| Support & onderhoud         | Anas Chakkour, Ludger De Sousa Lima, Sabri Merroun, Zakaria Korchi, Soufiane Abakkiou |
+
+## 📚 Gebruikte Bronnen
+
+- **Lessen Back End Webontwikkeling (Erasmushogeschool Brussel)**
+  - Slides en cursusmateriaal van de opleiding
+  - Voorbeelden en opdrachten uit de lessen
+
+- **Eindproject Laravel**
+  - Projectopdracht en richtlijnen van de opleiding
+  - Feedback en tips van docenten
+
+- **Laravel Documentatie**
+  - [Laravel officiële documentatie](https://laravel.com/docs)
+  - [Laravel Eloquent ORM](https://laravel.com/docs/eloquent)
+  - [Laravel Blade Templates](https://laravel.com/docs/blade)
+  - [Laravel Routing](https://laravel.com/docs/routing)
+  - [Laravel Migrations & Seeders](https://laravel.com/docs/migrations)
+
+- **Overige Documentatie en Hulpmiddelen**
+  - [PHP officiële documentatie](https://www.php.net/docs.php)
+  - [Composer documentatie](https://getcomposer.org/doc/)
+  - [Node.js documentatie](https://nodejs.org/en/docs/)
+  - [NPM documentatie](https://docs.npmjs.com/)
+  - [MySQL documentatie](https://dev.mysql.com/doc/)
+  - [VS Code gebruikersgids](https://code.visualstudio.com/docs)
+  - [GitHub Copilot](https://github.com/features/copilot) voor AI-ondersteunde codesuggesties en ontwikkelingshulp
+  - Stack Overflow en andere online fora voor specifieke problemen
+
+---
+
+
