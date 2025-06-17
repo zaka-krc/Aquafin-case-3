@@ -50,6 +50,16 @@ class MaterialController extends Controller
         return view('materials.index', compact('categories', 'materials'));
     }
 
+     public function removeFromCart($materialId)
+    {
+        $cart = session()->get('cart', []);
+        if(isset($cart[$materialId])) {
+            unset($cart[$materialId]);
+            session()->put('cart', $cart);
+        }
+        return redirect()->back()->with('success', 'Materiaal verwijderd uit winkelwagen.');
+    }
+
     // Materiaal details
     public function show(Material $material)
     {
