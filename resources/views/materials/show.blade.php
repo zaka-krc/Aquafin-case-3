@@ -16,10 +16,16 @@
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
         <!-- Product Image -->
         <div>
-            <div class="bg-gray-200 rounded-lg aspect-square flex items-center justify-center">
-                <svg class="w-32 h-32 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
-                </svg>
+            <div class="bg-gray-200 rounded-lg aspect-square overflow-hidden">
+                <img src="{{ \App\Helpers\MaterialImageHelper::getImageUrl($material->name) }}" 
+                     alt="{{ $material->name }}" 
+                     class="w-full h-full object-cover"
+                     onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                <div class="w-full h-full flex items-center justify-center" style="display: none;">
+                    <svg class="w-32 h-32 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
+                    </svg>
+                </div>
             </div>
         </div>
 
@@ -126,7 +132,15 @@
                 @foreach($relatedMaterials as $related)
                     <a href="{{ route('materials.show', $related) }}" class="block">
                         <div class="bg-white border rounded-lg p-4 hover:shadow-lg transition-shadow">
-                            <div class="bg-gray-200 rounded h-32 mb-3"></div>
+                            <div class="bg-gray-200 rounded h-32 mb-3 overflow-hidden">
+                                <img src="{{ \App\Helpers\MaterialImageHelper::getImageUrl($related->name) }}" 
+                                     alt="{{ $related->name }}" 
+                                     class="w-full h-full object-cover"
+                                     onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                                <div class="w-full h-full flex items-center justify-center text-2xl text-gray-400" style="display: none;">
+                                    📦
+                                </div>
+                            </div>
                             <h3 class="font-medium text-sm mb-1">{{ $related->name }}</h3>
                             <p class="text-xs text-gray-600">{{ $related->current_stock }} {{ $related->unit }}</p>
                         </div>

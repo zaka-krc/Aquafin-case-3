@@ -156,6 +156,31 @@
 
                 <!-- Rechter kolom -->
                 <div class="space-y-6">
+                    <!-- Afbeelding Preview -->
+                    <div class="bg-gray-50 rounded-lg p-4">
+                        <h3 class="text-lg font-medium text-gray-900 mb-4">🖼️ Materiaal Afbeelding</h3>
+                        
+                        <div class="bg-white rounded-lg border-2 border-dashed border-gray-300 p-6">
+                            <div class="w-full h-48 bg-gray-100 rounded-lg mb-4 overflow-hidden flex items-center justify-center" id="image-preview">
+                                <div class="text-center" id="placeholder-content">
+                                    <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48">
+                                        <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    </svg>
+                                    <p class="mt-2 text-sm text-gray-500">Afbeelding wordt automatisch geladen op basis van materiaal naam</p>
+                                </div>
+                                <img id="preview-image" class="w-full h-full object-cover" style="display: none;">
+                            </div>
+                            
+                            <div class="text-center">
+                                <button type="button" 
+                                        onclick="loadPreviewImage()" 
+                                        class="inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                                    🔄 Afbeelding Laden
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
                     <!-- Voorraad informatie -->
                     <div class="bg-gray-50 rounded-lg p-4">
                         <h3 class="text-lg font-medium text-gray-900 mb-4">📊 Voorraad Informatie</h3>
@@ -313,6 +338,13 @@ document.addEventListener('DOMContentLoaded', function() {
     currentStockInput.addEventListener('input', updatePreview);
     unitSelect.addEventListener('change', updatePreview);
     
+    // Auto-load image when name changes
+    nameInput.addEventListener('input', function() {
+        if (this.value.length > 3) {
+            setTimeout(loadPreviewImage, 500); // Debounce
+        }
+    });
+    
     // Initial preview update
     updatePreview();
     
@@ -325,5 +357,60 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 });
+
+// Load preview image function
+function loadPreviewImage() {
+    const materialName = document.getElementById('name').value;
+    if (!materialName) {
+        alert('Voer eerst een materiaal naam in');
+        return;
+    }
+    
+    // Create a temporary image to test if it loads
+    const testImg = new Image();
+    const previewImg = document.getElementById('preview-image');
+    const placeholder = document.getElementById('placeholder-content');
+    
+    testImg.onload = function() {
+        previewImg.src = testImg.src;
+        previewImg.style.display = 'block';
+        placeholder.style.display = 'none';
+    };
+    
+    testImg.onerror = function() {
+        placeholder.innerHTML = `
+            <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48">
+                <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <p class="mt-2 text-sm text-red-500">Geen afbeelding gevonden voor "${materialName}"</p>
+            <p class="text-xs text-gray-500">Er wordt een placeholder gebruikt voor gebruikers</p>
+        `;
+        previewImg.style.display = 'none';
+        placeholder.style.display = 'block';
+    };
+    
+    // Use the MaterialImageHelper to get the URL
+    testImg.src = getImageUrlForMaterial(materialName);
+}
+
+// Simple client-side version of the image helper for preview
+function getImageUrlForMaterial(materialName) {
+    // This would normally use the PHP helper, but for preview we'll use a simple approximation
+    const name = materialName.toLowerCase();
+    
+    // Add some basic matching
+    if (name.includes('bout') && name.includes('m6')) {
+        return 'https://media.s-bol.com/311L0wKzkjQR/550x505.jpg';
+    } else if (name.includes('bout') && name.includes('m8')) {
+        return 'https://media.s-bol.com/R48OYV4EovO/550x505.jpg';
+    } else if (name.includes('moer') && name.includes('m6')) {
+        return 'https://cdn.toolstation.be/images/160916-BE/800/20204.jpg';
+    } else if (name.includes('helm')) {
+        return 'https://www.gereedschap.rotopino.be/photo/product/neo-97-222-2-137060-f-sk7-w780-h554_1.png';
+    }
+    
+    // Fallback
+    return `https://via.placeholder.com/300x300/e5e7eb/6b7280?text=${encodeURIComponent(materialName)}`;
+}
 </script>
 @endsection

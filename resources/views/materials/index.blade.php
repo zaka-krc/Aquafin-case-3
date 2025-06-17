@@ -85,8 +85,16 @@
                         <div class="bg-white border rounded-xl shadow hover:shadow-lg transition-shadow">
                             <!-- Klikbare kaart voor details -->
                             <a href="{{ route('materials.show', $material) }}" class="block p-4">
-                                <!-- Image placeholder met voorraad indicator -->
-                                <div class="w-full h-32 bg-gray-200 rounded mb-4 relative">
+                                <!-- Image met voorraad indicator -->
+                                <div class="w-full h-32 bg-gray-200 rounded mb-4 relative overflow-hidden">
+                                    <img src="{{ \App\Helpers\MaterialImageHelper::getImageUrl($material->name) }}" 
+                                         alt="{{ $material->name }}" 
+                                         class="w-full h-full object-cover"
+                                         onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                                    <div class="w-full h-full flex items-center justify-center text-4xl text-gray-400" style="display: none;">
+                                        📦
+                                    </div>
+                                    
                                     @if($material->current_stock == 0)
                                         <span class="absolute top-2 right-2 bg-red-500 text-white text-xs px-2 py-1 rounded">
                                             Niet op voorraad

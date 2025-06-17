@@ -36,6 +36,36 @@
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 <!-- Linker kolom -->
                 <div class="space-y-6">
+                    <!-- Huidige afbeelding -->
+                    <div class="bg-gray-50 rounded-lg p-4">
+                        <h3 class="text-lg font-medium text-gray-900 mb-4">🖼️ Huidige Afbeelding</h3>
+                        
+                        <div class="bg-white rounded-lg border p-4">
+                            <div class="w-full h-48 bg-gray-100 rounded-lg overflow-hidden flex items-center justify-center">
+                                <img src="{{ \App\Helpers\MaterialImageHelper::getImageUrl($material->name) }}" 
+                                     alt="{{ $material->name }}" 
+                                     class="w-full h-full object-cover"
+                                     onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                                <div class="w-full h-full flex items-center justify-center text-gray-400" style="display: none;">
+                                    <div class="text-center">
+                                        <svg class="mx-auto h-12 w-12" stroke="currentColor" fill="none" viewBox="0 0 48 48">
+                                            <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                        </svg>
+                                        <p class="mt-2 text-sm">Geen afbeelding</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="mt-4 text-center">
+                                <button type="button" 
+                                        onclick="refreshImage()" 
+                                        class="inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                                    🔄 Afbeelding Verversen
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
                     <!-- Basis informatie -->
                     <div class="bg-gray-50 rounded-lg p-4">
                         <h3 class="text-lg font-medium text-gray-900 mb-4">📋 Basis Informatie</h3>
@@ -322,6 +352,18 @@
                     <div class="bg-blue-50 rounded-lg p-4">
                         <h3 class="text-lg font-medium text-blue-900 mb-4">👁️ Preview Gebruikersweergave</h3>
                         <div class="bg-white rounded-lg border border-blue-200 p-4">
+                            <!-- Preview Image -->
+                            <div class="w-full h-32 bg-gray-100 rounded mb-4 overflow-hidden">
+                                <img id="preview-image" 
+                                     src="{{ \App\Helpers\MaterialImageHelper::getImageUrl($material->name) }}" 
+                                     alt="{{ $material->name }}" 
+                                     class="w-full h-full object-cover"
+                                     onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                                <div class="w-full h-full flex items-center justify-center text-4xl text-gray-400" style="display: none;">
+                                    📦
+                                </div>
+                            </div>
+                            
                             <div class="flex items-center justify-between mb-2">
                                 <h4 class="font-medium" id="preview-name">{{ $material->name }}</h4>
                                 <span class="text-xs text-gray-500" id="preview-stock">{{ $material->current_stock }} {{ $material->unit }}</span>
@@ -371,6 +413,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const previewDescription = document.getElementById('preview-description');
     const previewStock = document.getElementById('preview-stock');
     const previewButton = document.getElementById('preview-button');
+    const previewImage = document.getElementById('preview-image');
     
     function updatePreview() {
         // Update name
@@ -401,8 +444,20 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
     
+    function updatePreviewImage() {
+        const materialName = nameInput.value;
+        if (materialName && materialName.length > 3) {
+            // This would normally call the PHP helper, but for real-time preview we'd need AJAX
+            // For now, just update the alt text
+            previewImage.alt = materialName;
+        }
+    }
+    
     // Add event listeners
-    nameInput.addEventListener('input', updatePreview);
+    nameInput.addEventListener('input', function() {
+        updatePreview();
+        updatePreviewImage();
+    });
     categorySelect.addEventListener('change', updatePreview);
     descriptionInput.addEventListener('input', updatePreview);
     currentStockInput.addEventListener('input', updatePreview);
@@ -443,6 +498,17 @@ function setStockToMinimum() {
     setTimeout(() => {
         stockInput.style.backgroundColor = '';
     }, 500);
+}
+
+function refreshImage() {
+    const materialName = document.getElementById('name').value;
+    if (materialName) {
+        // Reload the page to refresh image (simple approach)
+        // In production, you might want to use AJAX
+        location.reload();
+    } else {
+        alert('Voer eerst een materiaal naam in');
+    }
 }
 </script>
 @endsection

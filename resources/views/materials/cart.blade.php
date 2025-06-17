@@ -18,8 +18,14 @@
             <div class="w-2/3 space-y-4">
                 @foreach($cart as $materialId => $item)
                     <div class="bg-white border rounded-xl p-6 flex items-center">
-                        <div class="w-20 h-20 bg-gray-200 rounded mr-6 flex items-center justify-center">
-                            <span class="text-2xl">📦</span>
+                        <div class="w-20 h-20 bg-gray-200 rounded mr-6 overflow-hidden flex-shrink-0">
+                            <img src="{{ \App\Helpers\MaterialImageHelper::getImageUrl($item['name']) }}" 
+                                 alt="{{ $item['name'] }}" 
+                                 class="w-full h-full object-cover"
+                                 onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                            <div class="w-full h-full flex items-center justify-center text-2xl" style="display: none;">
+                                📦
+                            </div>
                         </div>
                         
                         <div class="flex-1">

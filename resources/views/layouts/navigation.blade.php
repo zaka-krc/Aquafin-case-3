@@ -6,7 +6,7 @@
                 <!-- Logo -->
                 <div class="shrink-0 flex items-center">
                     <a href="{{ route('dashboard') }}" class="text-2xl font-bold text-blue-600">
-                        🌊 Aquafin
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/d7/Logo_Aquafin.png/1280px-Logo_Aquafin.png" alt="Aquafin Logo" class="h-8 w-8">
                     </a>
                 </div>
 
