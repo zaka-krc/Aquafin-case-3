@@ -31,7 +31,7 @@
     <div class="bg-white rounded-lg shadow p-6">
         <form action="{{ route('admin.materials.edit', $material) }}" method="POST" enctype="multipart/form-data">
             @csrf
-            @method('PATCH')
+            {{-- Geen @method directive nodig, we gebruiken gewoon POST --}}
             
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 <!-- Linker kolom -->

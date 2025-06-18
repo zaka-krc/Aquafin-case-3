@@ -89,8 +89,8 @@ class AdminController extends Controller
     // Materiaal bewerken form EN verwerken van updates
     public function editMaterial(Request $request, Material $material)
     {
-        // Als het een POST request is (form submission)
-        if ($request->isMethod('post')) {
+        // Als het een POST of PATCH request is (form submission)
+        if ($request->isMethod('post') || $request->isMethod('patch')) {
             $request->validate([
                 'name' => 'required|string|max:255',
                 'category_id' => 'required|exists:categories,id',

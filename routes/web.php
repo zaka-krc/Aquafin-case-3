@@ -52,7 +52,7 @@ Route::middleware(['auth', AdminMiddleware::class])->prefix('admin')->name('admi
     Route::get('/materials/create', [AdminController::class, 'createMaterial'])->name('materials.create');
     Route::post('/materials', [AdminController::class, 'storeMaterial'])->name('materials.store');
     Route::get('/materials/{material}', [AdminController::class, 'showMaterial'])->name('materials.show');
-    Route::match(['GET', 'POST'], '/materials/{material}/edit', [AdminController::class, 'editMaterial'])->name('materials.edit');
+    Route::match(['GET', 'POST', 'PATCH'], '/materials/{material}/edit', [AdminController::class, 'editMaterial'])->name('materials.edit');
     Route::delete('/materials/{material}', [AdminController::class, 'deleteMaterial'])->name('materials.delete');
     Route::patch('/materials/{material}/stock', [AdminController::class, 'updateStock'])->name('materials.update-stock');
     
