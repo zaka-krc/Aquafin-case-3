@@ -19,7 +19,7 @@ class CategorySeeder extends Seeder
         ];
 
         foreach ($categories as $category) {
-            Category::create($category + ['is_active' => true]);
+            Category::updateOrCreate($category + ['is_active' => true]);
         }
     }
 }

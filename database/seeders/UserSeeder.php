@@ -10,20 +10,24 @@ class UserSeeder extends Seeder
 {
     public function run(): void
     {
-        User::create([
-            'name' => 'Admin',
-            'email' => 'admin@aquafin.be',
-            'password' => Hash::make('password'),
-            'role' => 'admin',
-            'email_verified_at' => now()
-        ]);
+        User::updateOrCreate(
+            ['email' => 'admin@aquafin.be'],
+            [
+                'name' => 'Admin',
+                'password' => Hash::make('password'),
+                'role' => 'admin',
+                'email_verified_at' => now()
+            ]
+        );
 
-        User::create([
-            'name' => 'Test',
-            'email' => 'jan@aquafin.be',
-            'password' => Hash::make('password'),
-            'role' => 'user',
-            'email_verified_at' => now()
-        ]);
+        User::firstOrCreate(
+            ['email' => 'jan@aquafin.be'],
+            [
+                'name' => 'Test',
+                'password' => Hash::make('password'),
+                'role' => 'user',
+                'email_verified_at' => now()
+            ]
+        );
     }
 }

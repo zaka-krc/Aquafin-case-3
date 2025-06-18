@@ -13,15 +13,44 @@ Volg deze stappen om het project lokaal te installeren:
 3. **Open een terminal in de projectmap.**
 
 4. **Installeer de PHP- en JavaScript-afhankelijkheden:**
-   ```bash
-   composer install
-   npm install
-   cp .env.example .env
-   php artisan key:generate
-   php artisan migrate
-   php artisan db:seed
-   php artisan serve
-   ```
+    ```bash
+    # Installeer PHP dependencies
+    composer install
+
+    # Installeer front-end dependencies
+    npm install
+
+    # Configuratie voorbereiden
+    cp .env.example .env
+    php artisan key:generate
+
+    # Database setup
+    php artisan migrate 
+    # OF
+    php artisan migrate:fresh --seed  # Database opnieuw aanmaken en vullen
+
+    # Optimalisatie
+    composer dump-autoload
+    npm run dev                       # Voor ontwikkeling
+    # OF
+    npm run build                     # Voor productie
+
+    # Start de applicatie
+    php artisan serve                 # Server start op http://localhost:8000
+    ```
+
+    Samenvatting (voor freshe start): 
+    ```bash
+    composer install
+    npm install
+    cp .env.example .env
+    composer dump-autoload
+    php artisan key:generate
+    php artisan migrate:fresh --seed
+    php artisan serve 
+    npm run dev
+    ```
+
 
 
 

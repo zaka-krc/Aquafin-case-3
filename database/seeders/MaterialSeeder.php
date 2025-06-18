@@ -199,7 +199,7 @@ class MaterialSeeder extends Seeder
             
             if ($category) {
                 foreach ($items as $item) {
-                    Material::create([
+                    Material::updateOrCreate([
                         'category_id' => $category->id,
                         'name' => $item['name'],
                         'description' => $item['description'] ?? null,
