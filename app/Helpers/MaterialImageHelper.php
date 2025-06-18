@@ -15,7 +15,7 @@ class MaterialImageHelper
             return self::$imageMap;
         }
         
-        $filePath = storage_path('app/storage/public/materiaal_lijst.txt');
+        $filePath = storage_path('app/public/materiaal_lijst.txt');
         
         if (!file_exists($filePath)) {
             self::$imageMap = [];
