@@ -7,10 +7,10 @@ use App\Http\Controllers\OrderController;
 use App\Http\Middleware\AdminMiddleware;
 use Illuminate\Support\Facades\Route;
 
-// Redirect home naar dashboard als ingelogd
+// Redirect home naar materials als ingelogd (in plaats van dashboard)
 Route::get('/', function () {
     if (auth()->check()) {
-        return redirect()->route('dashboard');
+        return redirect()->route('materials.index');
     }
     return redirect()->route('login');
 });
@@ -18,9 +18,9 @@ Route::get('/', function () {
 // User routes (authentication required)
 Route::middleware('auth')->group(function () {
     
-    // Dashboard
+    // Tijdelijke dashboard redirect (voor Laravel Auth compatibiliteit)
     Route::get('/dashboard', function () {
-        return view('dashboard');
+        return redirect()->route('materials.index');
     })->name('dashboard');
     
     // Materials (User functionality)

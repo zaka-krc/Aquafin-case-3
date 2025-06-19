@@ -5,17 +5,13 @@
             <div class="flex">
                 <!-- Logo -->
                 <div class="shrink-0 flex items-center">
-                    <a href="{{ route('dashboard') }}" class="text-2xl font-bold text-blue-600">
+                    <a href="{{ route('materials.index') }}" class="text-2xl font-bold text-blue-600">
                         <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/d7/Logo_Aquafin.png/1280px-Logo_Aquafin.png" alt="Aquafin Logo" style="height: 50px; width: auto;">
                     </a>
                 </div>
 
                 <!-- Navigation Links -->
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                    <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
-                        {{ __('Dashboard') }}
-                    </x-nav-link>
-                    
                     <x-nav-link :href="route('materials.index')" :active="request()->routeIs('materials.*')">
                         {{ __('Materialen') }}
                     </x-nav-link>
@@ -92,10 +88,6 @@
     <!-- Responsive Navigation Menu -->
     <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden">
         <div class="pt-2 pb-3 space-y-1">
-            <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
-                {{ __('Dashboard') }}
-            </x-responsive-nav-link>
-            
             <x-responsive-nav-link :href="route('materials.index')" :active="request()->routeIs('materials.*')">
                 {{ __('Materialen') }}
             </x-responsive-nav-link>
